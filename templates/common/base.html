@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>  
+    <link href="{% static "css/blog.css" %}" rel="stylesheet">
+</head>
+<body> 
+    <div id="content"> 
+        <!-- ১. ইউজার লগইন থাকলে মেনুবার দেখাবে -->
+        {% if request.user.is_authenticated %}  
+            <ul class="menu">  
+                <li {% if section == "dashboard" %}class="selected"{% endif %}> 
+                    <a href="{% url "dashboard" %}">My dashboard</a> 
+                </li> 
+                <li {% if section == "images" %}class="selected"{% endif %}>  
+                    <a href="#">Images</a> 
+                </li> 
+                <li {% if section == "people" %}class="selected"{% endif %}>
+                    <a href="#">People</a>  
+                </li>  
+            </ul>  
+        {% endif %}  
+
+        <!-- ২. ইউজারের তথ্য ও লগইন/লগআউট সেকশন -->
+        <span class="user">
+            {% if request.user.is_authenticated %}  
+                Hello {{ request.user.first_name|default:request.user.username }},  
+                <form action="{% url "logout" %}" method="post"> 
+                    <button type="submit">Logout</button> 
+                    {% csrf_token %}  
+                </form>  
+            {% else %}  
+                <a href="{% url "login" %}">Log-in</a> 
+            {% endif %}  
+        </span>
+
+        <!-- ৩. চাইল্ড টেমপ্লেট কন্টেন্ট -->
+        {% block content %}
+        {% endblock %} 
+    </div> 
+</body>
+</html>
